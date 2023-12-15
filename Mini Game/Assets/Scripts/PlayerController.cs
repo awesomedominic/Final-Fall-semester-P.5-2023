@@ -5,16 +5,20 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float speed = 10f;
+    public AudioClip coinSound;
 
     private float _horizontalInput;
     private float _forwardInput;
 
     private Rigidbody _playerRb;
 
+    private AudioSource _playerAudio;
+
     // Start is called before the first frame update
     void Start()
     {
         _playerRb = GetComponent<Rigidbody>();
+        _playerAudio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -27,4 +31,14 @@ public class PlayerController : MonoBehaviour
 
         _playerRb.AddForce(lookDirection * speed);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Coin"))
+        {
+            _playerAudio.PlayOneShot(coinSound, 1f);
+            GameObject.Find("Spawn Manager").GetComponent<SpawnManager>().SpawnCollectableObject();
+        }
+    }
+
 }
